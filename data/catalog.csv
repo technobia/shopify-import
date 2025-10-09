@@ -1,0 +1,3 @@
+sku,title,price,inventory,status,description_html,images,vendor,product_type,options
+SKU-1001,Blue Tee,19.99,12,active,"<p>Soft tee</p>",https://picsum.photos/seed/1/600/600|https://picsum.photos/seed/2/600/600,Acme,Shirts,"Size: S,M,L | Color: Blue"
+SKU-1002,Red Tee,21.50,3,active,"<p>Red tee</p>",https://picsum.photos/seed/3/600/600,Acme,Shirts,"Size: M,L | Color: Red"
