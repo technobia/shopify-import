@@ -1,7 +1,7 @@
 import { gql } from '../api/client.js';
 
 
-const Q = /* GraphQL */ `
+const Q = `
     query FindVariants($query: String!, $first: Int = 50) {
         productVariants(first: $first, query: $query) {
             edges { node { id sku product { id } } }

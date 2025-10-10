@@ -1,23 +1,3 @@
-import fs from 'node:fs';
-
-
-export function buildCreateJsonl(path, createItems) {
-  const lines = createItems.map(({ rec }) => {
-    const { input, media } = toProductCreateInput(rec);
-    const line = { input };
-    if (media) line.media = media;
-    return line;
-  });
-  fs.writeFileSync(path, lines.map((l) => JSON.stringify(l)).join('\n'));
-}
-
-
-export function buildUpdateJsonl(path, updateItems) {
-  const lines = updateItems.map(({ rec, ids }) => ({ id: ids.productId, input: toProductUpdateInput(rec) }));
-  fs.writeFileSync(path, lines.map((l) => JSON.stringify(l)).join('\n'));
-}
-
-
 export function toProductCreateInput(rec) {
   const input = {
     title: rec.title,

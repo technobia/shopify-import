@@ -87,7 +87,7 @@ async function main() {
  * Get inventory locations from Shopify
  */
 async function getInventoryLocations() {
-  const query = /* GraphQL */ `
+  const query = `
     query {
       locations(first: 10) {
         edges {
@@ -112,7 +112,7 @@ async function getInventoryLocations() {
  * Get inventory item ID for a variant
  */
 async function getInventoryItemId(variantId) {
-  const query = /* GraphQL */ `
+  const query = `
     query getInventoryItem($id: ID!) {
       productVariant(id: $id) {
         inventoryItem {
@@ -131,7 +131,7 @@ async function getInventoryItemId(variantId) {
  * Set inventory quantity at a location
  */
 async function setInventoryQuantity(inventoryItemId, locationId, quantity) {
-  const mutation = /* GraphQL */ `
+  const mutation = `
     mutation setInventory($input: InventorySetQuantitiesInput!) {
       inventorySetQuantities(input: $input) {
         inventoryAdjustmentGroup {
