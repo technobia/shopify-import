@@ -2,10 +2,9 @@ import { cfg } from './config.js';
 import { parseCsv } from './parsers/csv.js';
 import { parseXml } from './parsers/xml.js';
 import { discoverBySkus } from './sync/discover.js';
-import { diffRecords, saveHashes } from './sync/diff.js';
+import { diffRecords } from './sync/diff.js';
 import { toProductCreateInput, toProductUpdateInput } from './sync/build-jsonl.js';
 import { createProduct, updateProduct, updateVariant } from './sync/perItem.js';
-import { mapUpsert } from './state/db.js';
 
 
 /**
@@ -21,21 +20,16 @@ async function main() {
   const discovered = await discoverBySkus(skus);
   console.log(`🔍 Discovered ${discovered.size} existing products in Shopify\n`);
 
-  const { create, update, unchanged } = diffRecords(input, discovered);
-  console.log(`📊 Analysis: create=${create.length} update=${update.length} unchanged=${unchanged.length}\n`);
+  const { create, update } = diffRecords(input, discovered);
+  console.log(`📊 Analysis: create=${create.length} update=${update.length}\n`);
 
-  // Create new products
   console.log('=== Creating New Products ===');
-  const createdMapping = new Map();
   for (const { rec } of create) {
     try {
       const input = toProductCreateInput(rec);
       const result = await createProduct(input);
-      createdMapping.set(rec.sku, result);
-      discovered.set(rec.sku, result);
       console.log(`✓ Created: ${rec.sku} - ${rec.title}`);
 
-      // Update variant with SKU and price if available
       if (result.variantId) {
         const variantInput = {};
         if (rec.sku) variantInput.sku = rec.sku;
@@ -50,7 +44,6 @@ async function main() {
     }
   }
 
-  // Update existing products
   console.log('\n=== Updating Existing Products ===');
   for (const { rec, ids } of update) {
     try {
@@ -58,7 +51,6 @@ async function main() {
       await updateProduct(ids.productId, input);
       console.log(`✓ Updated: ${rec.sku} - ${rec.title}`);
 
-      // Update variant price and SKU
       if (rec.price != null && ids.variantId) {
         await updateVariant(ids.variantId, { price: rec.price.toString(), sku: rec.sku });
       }
@@ -67,18 +59,9 @@ async function main() {
     }
   }
 
-  // Save hashes and mappings
-  saveHashes([...create, ...update]);
-
-  const now = new Date().toISOString();
-  for (const [sku, ids] of discovered) {
-    mapUpsert.run({ sku, product_id: ids.productId, variant_id: ids.variantId, updated_at: now });
-  }
-
   console.log('\n✅ Product sync complete!');
   console.log(`   Created: ${create.length}`);
   console.log(`   Updated: ${update.length}`);
-  console.log(`   Unchanged: ${unchanged.length}`);
 }
 
 

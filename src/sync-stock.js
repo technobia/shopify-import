@@ -3,7 +3,6 @@ import { parseCsv } from './parsers/csv.js';
 import { parseXml } from './parsers/xml.js';
 import { discoverBySkus } from './sync/discover.js';
 import { gql } from './shopify.js';
-import { mapGet } from './state/db.js';
 
 
 /**
@@ -43,8 +42,7 @@ async function main() {
     }
 
     try {
-      // Check discovered products or database mapping
-      const ids = discovered.get(rec.sku) || mapGet.get(rec.sku);
+      const ids = discovered.get(rec.sku);
 
       if (!ids || !ids.variantId) {
         console.log(`⊘ Skipped ${rec.sku}: Product not found in Shopify`);

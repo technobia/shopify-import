@@ -2,10 +2,9 @@ import { cfg } from './config.js';
 import { parseCsv } from './parsers/csv.js';
 import { parseXml } from './parsers/xml.js';
 import { discoverBySkus } from './sync/discover.js';
-import { diffRecords, saveHashes } from './sync/diff.js';
+import { diffRecords } from './sync/diff.js';
 import { toProductCreateInput, toProductUpdateInput } from './sync/build-jsonl.js';
 import { createProduct, updateProduct, updateVariant } from './sync/perItem.js';
-import { mapUpsert } from './state/db.js';
 
 
 async function main() {
@@ -13,17 +12,14 @@ async function main() {
   const skus = input.map((x) => x.sku).filter(Boolean);
 
   const discovered = await discoverBySkus(skus);
-  const { create, update, unchanged } = diffRecords(input, discovered);
-  console.log(`create=${create.length} update=${update.length} unchanged=${unchanged.length}`);
+  const { create, update } = diffRecords(input, discovered);
+  console.log(`create=${create.length} update=${update.length}`);
 
   console.log('\n=== Creating Products ===');
-  const createdMapping = new Map();
   for (const { rec } of create) {
     try {
       const input = toProductCreateInput(rec);
       const result = await createProduct(input);
-      createdMapping.set(rec.sku, result);
-      discovered.set(rec.sku, result);
       console.log(`✓ Created: ${rec.sku} - ${rec.title}`);
 
       if (result.variantId) {
@@ -53,13 +49,6 @@ async function main() {
     } catch (e) {
       console.error(`✗ Failed to update ${rec.sku}:`, e.message);
     }
-  }
-
-  saveHashes([...create, ...update]);
-
-  const now = new Date().toISOString();
-  for (const [sku, ids] of discovered) {
-    mapUpsert.run({ sku, product_id: ids.productId, variant_id: ids.variantId, updated_at: now });
   }
 
   console.log('Done.');

@@ -15,16 +15,15 @@ A flexible Node.js tool for syncing products, prices, and inventory from CSV/XML
 - Support for custom data sources
 
 🎯 **Smart Syncing**
-- Hash-based change detection (only sync what changed)
-- SKU-based product matching
+- SKU-based product matching via Shopify API
 - Automatic duplicate prevention
-- Rate limiting to respect Shopify API limits
+- Update existing or create new products
+- Direct Shopify queries (no local database)
 
 📊 **Production Ready**
-- SQLite database for state tracking
 - Detailed logging and error handling
-- Resumable operations
 - Configurable via environment variables
+- Simple and straightforward architecture
 
 ## Installation
 
@@ -196,27 +195,18 @@ export const myMapping = {
 
 ## How It Works
 
-### 1. Discovery Phase
+### 1. Load Phase
 - Loads products from your feed (CSV/XML)
-- Queries Shopify to find existing products by SKU
-- Builds a mapping of what exists
+- Extracts SKUs from your products
 
-### 2. Diff Phase
-- Compares feed data with existing products
-- Uses content hashing to detect changes
-- Categorizes products as: create, update, or unchanged
+### 2. Discovery Phase
+- Queries Shopify by SKU to find existing products
+- Returns product IDs for existing products
 
 ### 3. Sync Phase
-- Creates new products in Shopify
-- Updates changed products
-- Saves state to SQLite database
-- Logs all operations
-
-### 4. State Tracking
-- Stores product hashes in SQLite
-- Remembers SKU to Shopify ID mappings
-- Enables incremental syncs
-- Prevents unnecessary API calls
+- **Create**: Products not found in Shopify
+- **Update**: Products found in Shopify
+- Logs all operations with detailed output
 
 ## Project Structure
 
@@ -238,19 +228,15 @@ shopify-import/
 │   │       ├── index.js              # Mapping registry
 │   │       ├── zeg-mapping.js        # ZEG format (default)
 │   │       └── generic-mapping.js    # Generic format
-│   ├── sync/
-│   │   ├── discover.js       # Product discovery in Shopify
-│   │   ├── diff.js           # Change detection
-│   │   ├── build-jsonl.js    # Bulk operation helpers
-│   │   ├── bulk.js           # Bulk API operations
-│   │   └── perItem.js        # Individual product operations
-│   └── state/
-│       ├── db.js             # SQLite database
-│       └── hash.js           # Content hashing
+│   └── sync/
+│       ├── discover.js       # Product discovery in Shopify
+│       ├── diff.js           # Create/update categorization
+│       ├── build-jsonl.js    # Bulk operation helpers
+│       ├── bulk.js           # Bulk API operations
+│       └── perItem.js        # Individual product operations
 ├── data/
 │   ├── products.csv          # CSV data files
 │   └── products.xml          # XML data files
-├── state.sqlite              # State database (auto-created)
 ├── package.json
 └── README.md                 # This file
 ```
@@ -321,22 +307,13 @@ If you hit rate limits:
 ### Missing Fields
 
 For XML:
-1. Check field mapping in `src/mapping/xml-mapper.js`
-2. See [MAPPING.md](./MAPPING.md) for customization
-3. Use XML format detection or set `XML_FORMAT` in .env
+1. Check field mapping in `src/mapping/mappings/`
+2. Verify field names in your XML match the mapping
+3. Set correct `XML_FORMAT` in .env
 
 For CSV:
 1. Ensure column names match expected format
 2. Check `src/parsers/csv.js` for supported columns
-
-### Database Issues
-
-Reset the state database:
-```bash
-rm state.sqlite
-# Run sync again - will recreate database
-npm run sync:products
-```
 
 ## Development
 

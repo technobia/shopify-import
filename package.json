@@ -9,7 +9,6 @@
     "sync:stock": "node src/sync-stock.js"
   },
   "dependencies": {
-    "better-sqlite3": "^12.4.1",
     "csv-parse": "^5.5.6",
     "dotenv": "^16.4.5",
     "fast-xml-parser": "^4.5.0"
