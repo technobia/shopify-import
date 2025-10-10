@@ -1,4 +1,4 @@
-export const zegMapping = {
+export const xmlMapping = {
   sku: {
     path: 'ARTNR',
     transform: (value) => value ? String(value).trim() : null

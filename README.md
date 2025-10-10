@@ -55,7 +55,6 @@ SHOPIFY_ADMIN_TOKEN=shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 PRIMARY_SOURCE=xml          # 'csv' or 'xml'
 CSV_SOURCE=./data/products.csv
 XML_SOURCE=./data/products.xml
-XML_FORMAT=zeg             # 'zeg', 'catalog', or 'generic'
 ```
 
 ### Getting Shopify Credentials
@@ -225,15 +224,12 @@ shopify-import/
 │   │   │   └── bulk.js       # Bulk API operations
 │   │   │
 │   │   ├── parsers/          # Data Input Parsers
-│   │   │   ├── csv.js        # CSV parser
+│   │   │   ├── csv.js        # CSV parser (uses Shopify format)
 │   │   │   └── xml.js        # XML parser with format detection
 │   │   │
-│   │   ├── mapping/          # Field Mapping System
-│   │   │   ├── xml-mapper.js # Mapping engine
-│   │   │   └── mappings/
-│   │   │       ├── index.js           # Mapping registry
-│   │   │       ├── zeg-mapping.js     # ZEG XML format
-│   │   │       └── generic-mapping.js # Generic XML format
+│   │   ├── mapping/          # XML Field Mapping (customize for your shop)
+│   │   │   ├── mapping.js    # 👈 Edit this for your XML fields
+│   │   │   └── xml-mapper.js # Mapping engine
 │   │   │
 │   │   └── sync/             # Sync Orchestration
 │   │       ├── discover.js   # Product discovery in Shopify
@@ -316,13 +312,13 @@ If you hit rate limits:
 ### Missing Fields
 
 For XML:
-1. Check field mapping in `src/mapping/mappings/`
-2. Verify field names in your XML match the mapping
-3. Set correct `XML_FORMAT` in .env
+1. Edit `src/lib/mapping/mapping.js` to match your XML structure
+2. Map your XML field names to Shopify product fields
+3. Use `path` for simple fields or `transform` functions for complex logic
 
 For CSV:
-1. Ensure column names match expected format
-2. Check `src/parsers/csv.js` for supported columns
+1. Ensure column names match Shopify export format
+2. Check `src/lib/parsers/csv.js` for supported columns
 
 ## Development
 

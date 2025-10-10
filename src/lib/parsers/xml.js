@@ -3,7 +3,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { createMapper } from '../mapping/xml-mapper.js';
 import { cfg } from '../../config.js';
 
-export async function parseXml(path, options = {}) {
+export async function parseXml(path) {
   const xml = await fs.promises.readFile(path, 'utf8');
   const parser = new XMLParser({
     ignoreAttributes: false,
@@ -11,15 +11,9 @@ export async function parseXml(path, options = {}) {
   });
   const data = parser.parse(xml);
 
-  const format = options.format || detectFormat(data);
+  const format = detectFormat(data);
   const items = extractItems(data, format);
-
-  let mapper;
-  if (options.mapper) {
-    mapper = typeof options.mapper === 'string' ? createMapper(options.mapper) : options.mapper;
-  } else {
-    mapper = createMapper(cfg.xmlFormat || 'zeg');
-  }
+  const mapper = createMapper();
 
   return items.map(item => mapper.mapProduct(item));
 }

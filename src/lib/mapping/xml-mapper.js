@@ -1,12 +1,8 @@
-import { getMappingByName } from './mappings/index.js';
+import { xmlMapping } from './mapping.js';
 
 export class XmlMapper {
-  constructor(config = {}) {
-    if (typeof config === 'string') {
-      this.config = getMappingByName(config);
-    } else {
-      this.config = config;
-    }
+  constructor(config = xmlMapping) {
+    this.config = config;
   }
 
   mapProduct(xmlItem) {
@@ -43,9 +39,9 @@ export class XmlMapper {
   }
 }
 
-export function createMapper(mappingNameOrConfig = 'zeg') {
-  return new XmlMapper(mappingNameOrConfig);
+export function createMapper(config) {
+  return new XmlMapper(config);
 }
 
-export const defaultMapper = new XmlMapper('zeg');
+export const defaultMapper = new XmlMapper();
 

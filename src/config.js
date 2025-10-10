@@ -9,7 +9,6 @@ export const cfg = {
   xmlSource: process.env.XML_SOURCE || './data/products.xml',
   feedCsv: process.env.CSV_SOURCE || process.env.FEED_CSV || './data/products.csv',
   feedXml: process.env.XML_SOURCE || process.env.FEED_XML || './data/products.xml',
-  xmlFormat: process.env.XML_FORMAT || 'zeg',
 };
 
 if (!cfg.shop || !cfg.token) {
