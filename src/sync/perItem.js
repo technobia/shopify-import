@@ -2,8 +2,8 @@ import { gql, rest } from '../shopify.js';
 
 
 const CREATE_PRODUCT = /* GraphQL */ `
-    mutation CreateProduct($input: ProductInput!) {
-        productCreate(input: $input) { 
+    mutation CreateProduct($input: ProductInput!, $media: [CreateMediaInput!]) {
+        productCreate(input: $input, media: $media) { 
             product { 
                 id 
                 variants(first: 1) { 
@@ -25,8 +25,12 @@ const UPDATE_PRODUCT = /* GraphQL */ `
 `;
 
 
-export async function createProduct(input) {
-    const d = await gql(CREATE_PRODUCT, { input });
+export async function createProduct(input, media) {
+    const variables = { input };
+    if (media?.length > 0) {
+        variables.media = media;
+    }
+    const d = await gql(CREATE_PRODUCT, variables);
     const errs = d.productCreate.userErrors;
     if (errs?.length) throw new Error(JSON.stringify(errs));
     const product = d.productCreate.product;

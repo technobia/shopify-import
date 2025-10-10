@@ -18,8 +18,8 @@ async function main() {
   console.log('\n=== Creating Products ===');
   for (const { rec } of create) {
     try {
-      const input = toProductCreateInput(rec);
-      const result = await createProduct(input);
+      const { input, media } = toProductCreateInput(rec);
+      const result = await createProduct(input, media);
       console.log(`✓ Created: ${rec.sku} - ${rec.title}`);
 
       if (result.variantId) {
