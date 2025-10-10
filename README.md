@@ -213,27 +213,36 @@ export const myMapping = {
 ```
 shopify-import/
 ├── src/
-│   ├── config.js              # Configuration management
-│   ├── index.js               # Original sync script
-│   ├── sync-products.js       # Product sync script
-│   ├── sync-price.js          # Price sync script
-│   ├── sync-stock.js          # Stock sync script
-│   ├── shopify.js             # Shopify API wrapper
-│   ├── parsers/
-│   │   ├── csv.js            # CSV parser
-│   │   └── xml.js            # XML parser with format detection
-│   ├── mapping/
-│   │   ├── xml-mapper.js     # XML field mapping service
-│   │   └── mappings/
-│   │       ├── index.js              # Mapping registry
-│   │       ├── zeg-mapping.js        # ZEG format (default)
-│   │       └── generic-mapping.js    # Generic format
-│   └── sync/
-│       ├── discover.js       # Product discovery in Shopify
-│       ├── diff.js           # Create/update categorization
-│       ├── build-jsonl.js    # Bulk operation helpers
-│       ├── bulk.js           # Bulk API operations
-│       └── perItem.js        # Individual product operations
+│   ├── commands/             # 🎯 CLI Entry Points
+│   │   ├── sync-products.js  # Full product sync
+│   │   ├── sync-price.js     # Price-only updates
+│   │   └── sync-stock.js     # Inventory-only updates
+│   │
+│   ├── lib/                  # 📚 Core Libraries
+│   │   ├── api/              # Shopify API Clients
+│   │   │   ├── client.js     # GraphQL & REST base client
+│   │   │   ├── products.js   # Product operations
+│   │   │   └── bulk.js       # Bulk API operations
+│   │   │
+│   │   ├── parsers/          # Data Input Parsers
+│   │   │   ├── csv.js        # CSV parser
+│   │   │   └── xml.js        # XML parser with format detection
+│   │   │
+│   │   ├── mapping/          # Field Mapping System
+│   │   │   ├── xml-mapper.js # Mapping engine
+│   │   │   └── mappings/
+│   │   │       ├── index.js           # Mapping registry
+│   │   │       ├── zeg-mapping.js     # ZEG XML format
+│   │   │       └── generic-mapping.js # Generic XML format
+│   │   │
+│   │   └── sync/             # Sync Orchestration
+│   │       ├── discover.js   # Product discovery in Shopify
+│   │       ├── diff.js       # Create vs update logic
+│   │       └── transform.js  # Input transformations
+│   │
+│   ├── config.js             # Configuration
+│   └── index.js              # Default entry point
+│
 ├── data/
 │   ├── products.csv          # CSV data files
 │   └── products.xml          # XML data files

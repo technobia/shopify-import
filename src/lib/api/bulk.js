@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { gql } from '../shopify.js';
+import { gql } from './client.js';
 
 
 const STAGED_UPLOADS = /* GraphQL */ `
@@ -25,7 +25,7 @@ const CURRENT_BULK = /* GraphQL */ `
 
 
 export async function runBulk(jsonlPath, mutationName) {
-// 1) Request staged upload target
+  // 1) Request staged upload target
   const up = await gql(STAGED_UPLOADS, {
     input: [{
       resource: 'BULK_MUTATION_VARIABLES',
@@ -38,7 +38,7 @@ export async function runBulk(jsonlPath, mutationName) {
   if (!target) throw new Error('No staged upload target');
 
 
-// 2) Upload JSONL to S3 direct POST
+  // 2) Upload JSONL to S3 direct POST
   const form = new URLSearchParams();
   target.parameters.forEach(p => form.append(p.name, p.value));
   const file = await fs.promises.readFile(jsonlPath);
@@ -46,7 +46,7 @@ export async function runBulk(jsonlPath, mutationName) {
   if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
 
 
-// 3) Run bulk mutation
+  // 3) Run bulk mutation
   const mutation = buildMutationString(mutationName);
   const run = await gql(RUN_BULK, { mutation, stagedUploadPath: target.resourceUrl });
   if (run.bulkOperationRunMutation.userErrors?.length) {
@@ -54,7 +54,7 @@ export async function runBulk(jsonlPath, mutationName) {
   }
 
 
-// 4) Poll until finished
+  // 4) Poll until finished
   let status = 'RUNNING', last;
   while (status === 'RUNNING') {
     await new Promise(r => setTimeout(r, 5000));
@@ -70,8 +70,8 @@ export async function runBulk(jsonlPath, mutationName) {
 
 
 function formToBlob(form, file) {
-// Convert URLSearchParams + file into multipart/form-data
-// Node 18: use FormData
+  // Convert URLSearchParams + file into multipart/form-data
+  // Node 18: use FormData
   const fd = new FormData();
   for (const [k, v] of form) fd.append(k, v);
   fd.append('file', new Blob([file]), 'data.jsonl');

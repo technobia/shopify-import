@@ -1,8 +1,8 @@
-import { cfg } from './config.js';
-import { parseCsv } from './parsers/csv.js';
-import { parseXml } from './parsers/xml.js';
-import { discoverBySkus } from './sync/discover.js';
-import { gql } from './shopify.js';
+import { cfg } from '../config.js';
+import { parseCsv } from '../lib/parsers/csv.js';
+import { parseXml } from '../lib/parsers/xml.js';
+import { discoverBySkus } from '../lib/sync/discover.js';
+import { gql } from '../lib/api/client.js';
 
 
 /**

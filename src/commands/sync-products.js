@@ -1,10 +1,10 @@
-import { cfg } from './config.js';
-import { parseCsv } from './parsers/csv.js';
-import { parseXml } from './parsers/xml.js';
-import { discoverBySkus } from './sync/discover.js';
-import { diffRecords } from './sync/diff.js';
-import { toProductCreateInput, toProductUpdateInput } from './sync/build-jsonl.js';
-import { createProduct, updateProduct, updateVariant } from './sync/perItem.js';
+import { cfg } from '../config.js';
+import { parseCsv } from '../lib/parsers/csv.js';
+import { parseXml } from '../lib/parsers/xml.js';
+import { discoverBySkus } from '../lib/sync/discover.js';
+import { diffRecords } from '../lib/sync/diff.js';
+import { toProductCreateInput, toProductUpdateInput } from '../lib/sync/transform.js';
+import { createProduct, updateProduct, updateVariant } from '../lib/api/products.js';
 
 
 /**

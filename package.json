@@ -4,9 +4,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "sync:products": "node src/sync-products.js",
-    "sync:price": "node src/sync-price.js",
-    "sync:stock": "node src/sync-stock.js"
+    "sync:products": "node src/commands/sync-products.js",
+    "sync:price": "node src/commands/sync-price.js",
+    "sync:stock": "node src/commands/sync-stock.js"
   },
   "dependencies": {
     "csv-parse": "^5.5.6",

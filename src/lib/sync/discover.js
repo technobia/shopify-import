@@ -1,4 +1,4 @@
-import { gql } from '../shopify.js';
+import { gql } from '../api/client.js';
 
 
 const Q = /* GraphQL */ `

@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { XMLParser } from 'fast-xml-parser';
 import { createMapper } from '../mapping/xml-mapper.js';
-import { cfg } from '../config.js';
+import { cfg } from '../../config.js';
 
 export async function parseXml(path, options = {}) {
   const xml = await fs.promises.readFile(path, 'utf8');

@@ -1,4 +1,4 @@
-import { gql, rest } from '../shopify.js';
+import { gql, rest } from './client.js';
 
 
 const CREATE_PRODUCT = /* GraphQL */ `
