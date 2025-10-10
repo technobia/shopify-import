@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ZEGSHOP>
+    <DELETE>1</DELETE>
+    <HAUPTKATEGORIE>
+        <KATEGORIE>
+            <ARTIKEL>
+                <LFSN>ZEG</LFSN>
+                <LFKURZBEZ>ZEG</LFKURZBEZ>
+                <INTARTNR>100004</INTARTNR>
+                <ARTNR>022-00444</ARTNR>
+                <VARARTNR>022-00444</VARARTNR>
+                <REFARTNR>022-00444</REFARTNR>
+                <REFARTNR2>022-00444</REFARTNR2>
+                <HERSTNR>907063</HERSTNR>
+                <MARKE>Bikefit</MARKE>
+                <MARKENLOGO></MARKENLOGO>
+                <MODELL>gelb</MODELL>
+                <MODELLJAHR>0</MODELLJAHR>
+                <FARBE>gelb</FARBE>
+                <KURZTEXT></KURZTEXT>
+                <LANGTEXT></LANGTEXT>
+                <KURZBEZEICHNUNG>Lackstift gelb RAL 1018 12 ml</KURZBEZEICHNUNG>
+                <BEZEICHNUNG>Lackstift gelb RAL 1018 12 ml</BEZEICHNUNG>
+                <ARTSN>LACKSTIF</ARTSN>
+                <VK>9,99</VK>
+                <VKNETTO>8,4</VKNETTO>
+                <VKALT>9,99</VKALT>
+                <VKAKTION>0</VKAKTION>
+                <VKEMPF>9,99</VKEMPF>
+                <VKORG>9,99</VKORG>
+                <VKTIEF>0</VKTIEF>
+                <VKSTREICH>0,00</VKSTREICH>
+                <GRUNDPREIS>
+                    <EINHEIT></EINHEIT>
+                    <EINHEITBEZEICHNUNG></EINHEITBEZEICHNUNG>
+                    <MENGE></MENGE>
+                    <PREIS></PREIS>
+                </GRUNDPREIS>
+                <BILD>02200444.jpg;02200445.jpg;02200448.jpg;02200449.jpg;02200450.jpg;02200451.jpg;02200452.jpg;02200453.jpg;</BILD>
+                <BILDER_URL>
+                    <BILD_URL>https://prodimage.zeg.com/Bilder/1140x760/ZEG/022/022-00444.jpg?404=2</BILD_URL>
+                </BILDER_URL>
+                <WARENGRUPPE>120000</WARENGRUPPE>
+                <MWSTKZ>2</MWSTKZ>
+                <EANNR>8711347172849</EANNR>
+                <LAUFZEIT></LAUFZEIT>
+                <NEUDATUM>2019-10-14</NEUDATUM>
+                <AUSLAUF>0</AUSLAUF>
+                <GESPERRT>J</GESPERRT>
+                <PAKETVERSAND>1</PAKETVERSAND>
+                <VERSANDART>P</VERSANDART>
+                <VORANKUENDIGUNG>0</VORANKUENDIGUNG>
+                <ADRESSEN>
+                    <INVERKEHRBRINGER>
+                        <FIRMENNAME></FIRMENNAME>
+                        <ANSCHRIFT></ANSCHRIFT>
+                        <EMAIL></EMAIL>
+                    </INVERKEHRBRINGER>
+                    <HERSTELLER>
+                        <FIRMENNAME></FIRMENNAME>
+                        <ANSCHRIFT></ANSCHRIFT>
+                        <EMAIL></EMAIL>
+                    </HERSTELLER>
+                </ADRESSEN>
+                <MERKMAL>
+                    <MERKMALSCHLUESSEL>FARB</MERKMALSCHLUESSEL>
+                    <AUSPRAEGUNGSSCHLUESSEL>GE</AUSPRAEGUNGSSCHLUESSEL>
+                    <MERKMAL>Herstellerfarbe</MERKMAL>
+                    <AUSPRAEGUNG>gelb</AUSPRAEGUNG>
+                </MERKMAL>
+                <MERKMAL>
+                    <MERKMALSCHLUESSEL>GEW</MERKMALSCHLUESSEL>
+                    <AUSPRAEGUNGSSCHLUESSEL>GE1120</AUSPRAEGUNGSSCHLUESSEL>
+                    <MERKMAL>Gewicht **</MERKMAL>
+                    <AUSPRAEGUNG>12 ml</AUSPRAEGUNG>
+                </MERKMAL>
+            </ARTIKEL>
+        </KATEGORIE>
+    </HAUPTKATEGORIE>
+</ZEGSHOP>

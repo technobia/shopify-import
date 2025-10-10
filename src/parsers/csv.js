@@ -1,7 +1,6 @@
 import fs from 'node:fs';
 import { parse } from 'csv-parse';
 
-
 export async function parseCsv(path) {
   const rows = [];
   await new Promise((resolve, reject) => {
@@ -12,7 +11,6 @@ export async function parseCsv(path) {
       .on('error', reject);
   });
 
-  // Check if this is a Shopify export format (has 'Handle' column)
   if (rows.length > 0 && rows[0].Handle !== undefined) {
     return parseShopifyFormat(rows);
   }
@@ -20,9 +18,7 @@ export async function parseCsv(path) {
   return rows.map(normalize).filter(Boolean);
 }
 
-
 function normalize(r) {
-  // Support both custom format and Shopify export format
   const sku = r.sku || r['Variant SKU'] || r.Handle;
   const title = r.title || r.Title;
   const price = r.price || r['Variant Price'];
@@ -33,7 +29,6 @@ function normalize(r) {
   const vendor = r.vendor || r.Vendor;
   const productType = r.product_type || r.Type;
 
-  // Skip rows without SKU or title (like additional image rows in Shopify exports)
   if (!sku && !title) return null;
 
   return {
@@ -70,7 +65,6 @@ function parseShopifyFormat(rows) {
     const handle = row.Handle;
     if (!handle) continue;
 
-    // If this is the main product row (has Title)
     if (row.Title) {
       productMap.set(handle, {
         sku: row['Variant SKU'] || handle,
@@ -86,7 +80,6 @@ function parseShopifyFormat(rows) {
       });
     }
 
-    // Add image if present
     if (row['Image Src'] && productMap.has(handle)) {
       const product = productMap.get(handle);
       if (!product.images.includes(row['Image Src'])) {

@@ -1,8 +1,6 @@
 import { cfg } from './config.js';
 
-
 const base = `https://${cfg.shop}/admin/api/${cfg.apiVersion}`;
-
 
 export async function gql(query, variables = {}) {
   const res = await fetch(`${base}/graphql.json`, {
@@ -19,7 +17,6 @@ export async function gql(query, variables = {}) {
   }
   return json.data;
 }
-
 
 export async function rest(path, method = 'GET', body) {
   const res = await fetch(`${base}${path}`, {

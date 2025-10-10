@@ -1,38 +1,66 @@
 import fs from 'node:fs';
 import { XMLParser } from 'fast-xml-parser';
+import { createMapper } from '../mapping/xml-mapper.js';
+import { cfg } from '../config.js';
 
-
-export async function parseXml(path) {
+export async function parseXml(path, options = {}) {
   const xml = await fs.promises.readFile(path, 'utf8');
-  const parser = new XMLParser({ ignoreAttributes: false });
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: '@_'
+  });
   const data = parser.parse(xml);
-  const items = Array.isArray(data.catalog?.item) ? data.catalog.item : [data.catalog?.item].filter(Boolean);
-  return (items || []).map(normalize);
+
+  const format = options.format || detectFormat(data);
+  const items = extractItems(data, format);
+
+  let mapper;
+  if (options.mapper) {
+    mapper = typeof options.mapper === 'string' ? createMapper(options.mapper) : options.mapper;
+  } else {
+    mapper = createMapper(cfg.xmlFormat || 'zeg');
+  }
+
+  return items.map(item => mapper.mapProduct(item));
 }
 
-
-function normalize(x) {
-  return {
-    sku: x.sku,
-    title: x.title,
-    price: Number(x.price),
-    inventory: Number(x.inventory ?? 0),
-    status: (x.status || 'active').toLowerCase(),
-    descriptionHtml: x.descriptionHtml || x.description || '',
-    images: toArray(x.images?.image),
-    vendor: x.vendor || '',
-    productType: x.productType || '',
-    options: toOptions(x.options),
-  };
+function detectFormat(data) {
+  if (data.ZEGSHOP) return 'zeg';
+  if (data.catalog) return 'catalog';
+  return 'generic';
 }
 
+function extractItems(data, format) {
+  switch (format) {
+    case 'zeg': {
+      const hauptkategorien = toArray(data.ZEGSHOP?.HAUPTKATEGORIE);
+      const items = [];
+
+      hauptkategorien.forEach(haupt => {
+        const kategorien = toArray(haupt?.KATEGORIE);
+        kategorien.forEach(kat => {
+          const artikel = toArray(kat?.ARTIKEL);
+          items.push(...artikel);
+        });
+      });
+
+      return items;
+    }
+
+    case 'catalog':
+      return toArray(data.catalog?.item);
+
+    case 'generic':
+    default: {
+      if (data.items) return toArray(data.items);
+      if (data.products) return toArray(data.products);
+      if (data.item) return toArray(data.item);
+      return [];
+    }
+  }
+}
 
 function toArray(v) {
   if (!v) return [];
   return Array.isArray(v) ? v : [v];
-}
-
-
-function toOptions(o) {
-  return [];
 }
