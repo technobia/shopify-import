@@ -28,8 +28,8 @@ SHOPIFY_SHOP=your-shop.myshopify.com
 SHOPIFY_ADMIN_TOKEN=shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 PRIMARY_SOURCE=csv          # 'csv' or 'xml'
-CSV_SOURCE=./data/products.csv
-XML_SOURCE=./data/products.xml
+SOURCE_CSV=./data/products.csv
+SOURCE_XML=./data/products.xml
 ```
 
 ### Get Shopify Token

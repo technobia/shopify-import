@@ -5,10 +5,10 @@ export const cfg = {
   apiVersion: process.env.SHOPIFY_ADMIN_VERSION || '2024-10',
   token: process.env.SHOPIFY_ADMIN_TOKEN,
   primarySource: (process.env.PRIMARY_SOURCE || 'csv').toLowerCase(),
-  csvSource: process.env.CSV_SOURCE || './data/products.csv',
-  xmlSource: process.env.XML_SOURCE || './data/products.xml',
-  feedCsv: process.env.CSV_SOURCE || process.env.FEED_CSV || './data/products.csv',
-  feedXml: process.env.XML_SOURCE || process.env.FEED_XML || './data/products.xml',
+  csvSource: process.env.SOURCE_CSV || './data/products.csv',
+  xmlSource: process.env.SOURCE_XML || './data/products.xml',
+  feedCsv: process.env.SOURCE_CSV || './data/products.csv',
+  feedXml: process.env.SOURCE_XML || './data/products.xml',
 };
 
 if (!cfg.shop || !cfg.token) {
