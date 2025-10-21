@@ -4,21 +4,14 @@ import { parseXml } from '../lib/parsers/xml.js';
 import { discoverBySkus } from '../lib/sync/discover.js';
 import { updateVariant } from '../lib/api/products.js';
 
-
-/**
- * Sync Prices - Update only prices for existing products
- * This is faster than full product sync and can be run more frequently
- */
 async function main() {
   console.log('💰 Starting Price Sync...\n');
 
   const input = await loadFeed();
   console.log(`📦 Loaded ${input.length} products from feed\n`);
 
-  // Get existing mappings from database
   const skus = input.map((x) => x.sku).filter(Boolean);
   const discovered = await discoverBySkus(skus);
-
   console.log(`🔍 Found ${discovered.size} existing products\n`);
 
   let updated = 0;
@@ -26,7 +19,8 @@ async function main() {
   let failed = 0;
 
   console.log('=== Updating Prices ===');
-  for (const rec of input) {
+  for (let i = 0; i < input.length; i++) {
+    const rec = input[i];
     if (!rec.sku || rec.price == null) {
       skipped++;
       continue;
@@ -45,7 +39,6 @@ async function main() {
         price: rec.price.toString()
       };
 
-      // Include compare at price if available
       if (rec.compareAtPrice && rec.compareAtPrice > rec.price) {
         variantInput.compare_at_price = rec.compareAtPrice.toString();
       }
@@ -53,11 +46,6 @@ async function main() {
       await updateVariant(ids.variantId, variantInput);
       console.log(`✓ Updated price: ${rec.sku} → ${rec.price}€`);
       updated++;
-
-      // Small delay to avoid rate limits
-      if (updated % 100 === 0) {
-        await new Promise(r => setTimeout(r, 500));
-      }
     } catch (e) {
       console.error(`✗ Failed to update ${rec.sku}:`, e.message);
       failed++;
@@ -70,15 +58,12 @@ async function main() {
   console.log(`   Failed: ${failed}`);
 }
 
-
 async function loadFeed() {
   if (cfg.primarySource === 'xml') return parseXml(cfg.feedXml);
   return parseCsv(cfg.feedCsv);
 }
 
-
 main().catch((e) => {
   console.error('❌ Price sync failed:', e);
   process.exit(1);
 });
-

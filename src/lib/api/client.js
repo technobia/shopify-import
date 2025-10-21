@@ -1,8 +1,15 @@
 import { cfg } from '../../config.js';
+import { rateLimiter } from '../rate-limiter.js';
 
 const base = `https://${cfg.shop}/admin/api/${cfg.apiVersion}`;
 
-export async function gql(query, variables = {}) {
+export async function gql(query, variables = {}, options = {}) {
+  const { cost = 1, skipRateLimit = false } = options;
+
+  if (!skipRateLimit) {
+    await rateLimiter.waitForAvailability(cost);
+  }
+
   const res = await fetch(`${base}/graphql.json`, {
     method: 'POST',
     headers: {
@@ -15,7 +22,20 @@ export async function gql(query, variables = {}) {
   if (!res.ok || json.errors) {
     throw new Error(`GraphQL error: ${res.status} ${JSON.stringify(json)}`);
   }
-  return json.data;
+
+  if (json.extensions?.cost?.throttleStatus) {
+    rateLimiter.updateFromResponse(json.extensions.cost.throttleStatus);
+  }
+
+  const actualCost = json.extensions?.cost?.actualQueryCost || cost;
+  if (!skipRateLimit) {
+    rateLimiter.consumePoints(actualCost);
+  }
+
+  return {
+    data: json.data,
+    extensions: json.extensions
+  };
 }
 
 export async function rest(path, method = 'GET', body) {

@@ -6,10 +6,6 @@ import { diffRecords } from '../lib/sync/diff.js';
 import { toProductCreateInput, toProductUpdateInput } from '../lib/sync/transform.js';
 import { createProduct, updateProduct, updateVariant } from '../lib/api/products.js';
 
-
-/**
- * Sync Products - Full product sync including title, description, images, etc.
- */
 async function main() {
   console.log('🔄 Starting Product Sync...\n');
 
@@ -24,7 +20,8 @@ async function main() {
   console.log(`📊 Analysis: create=${create.length} update=${update.length}\n`);
 
   console.log('=== Creating New Products ===');
-  for (const { rec } of create) {
+  for (let i = 0; i < create.length; i++) {
+    const { rec } = create[i];
     try {
       const { input, media } = toProductCreateInput(rec);
       const result = await createProduct(input, media);
@@ -45,7 +42,8 @@ async function main() {
   }
 
   console.log('\n=== Updating Existing Products ===');
-  for (const { rec, ids } of update) {
+  for (let i = 0; i < update.length; i++) {
+    const { rec, ids } = update[i];
     try {
       const input = toProductUpdateInput(rec);
       await updateProduct(ids.productId, input);
@@ -64,15 +62,12 @@ async function main() {
   console.log(`   Updated: ${update.length}`);
 }
 
-
 async function loadFeed() {
   if (cfg.primarySource === 'xml') return parseXml(cfg.feedXml);
   return parseCsv(cfg.feedCsv);
 }
 
-
 main().catch((e) => {
   console.error('❌ Product sync failed:', e);
   process.exit(1);
 });
-
