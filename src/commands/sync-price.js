@@ -5,20 +5,20 @@ import { discoverBySkus } from '../lib/sync/discover.js';
 import { updateVariant } from '../lib/api/products.js';
 
 async function main() {
-  console.log('💰 Starting Price Sync...\n');
+  console.log('💰 Price Sync\n');
 
   const input = await loadFeed();
-  console.log(`📦 Loaded ${input.length} products from feed\n`);
+  console.log(`Loaded ${input.length} products`);
 
   const skus = input.map((x) => x.sku).filter(Boolean);
   const discovered = await discoverBySkus(skus);
-  console.log(`🔍 Found ${discovered.size} existing products\n`);
+  console.log(`Found ${discovered.size} existing products\n`);
 
   let updated = 0;
   let skipped = 0;
   let failed = 0;
 
-  console.log('=== Updating Prices ===');
+  console.log('Updating...');
   for (let i = 0; i < input.length; i++) {
     const rec = input[i];
     if (!rec.sku || rec.price == null) {
@@ -30,7 +30,7 @@ async function main() {
       const ids = discovered.get(rec.sku);
 
       if (!ids || !ids.variantId) {
-        console.log(`⊘ Skipped ${rec.sku}: Product not found in Shopify`);
+        console.log(`⊘ ${rec.sku}`);
         skipped++;
         continue;
       }
@@ -44,18 +44,15 @@ async function main() {
       }
 
       await updateVariant(ids.variantId, variantInput);
-      console.log(`✓ Updated price: ${rec.sku} → ${rec.price}€`);
+      console.log(`✓ ${rec.sku} → ${rec.price}€`);
       updated++;
     } catch (e) {
-      console.error(`✗ Failed to update ${rec.sku}:`, e.message);
+      console.error(`✗ ${rec.sku}: ${e.message}`);
       failed++;
     }
   }
 
-  console.log('\n✅ Price sync complete!');
-  console.log(`   Updated: ${updated}`);
-  console.log(`   Skipped: ${skipped}`);
-  console.log(`   Failed: ${failed}`);
+  console.log(`\n✅ Done (${updated} updated, ${skipped} skipped, ${failed} failed)`);
 }
 
 async function loadFeed() {
@@ -64,6 +61,6 @@ async function loadFeed() {
 }
 
 main().catch((e) => {
-  console.error('❌ Price sync failed:', e);
+  console.error('❌ Sync failed:', e);
   process.exit(1);
 });

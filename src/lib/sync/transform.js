@@ -7,6 +7,10 @@ export function toProductCreateInput(rec) {
     productType: rec.productType,
   };
 
+  if (rec.metafields && rec.metafields.length > 0) {
+    input.metafields = rec.metafields;
+  }
+
   const media = rec.images?.length > 0
     ? rec.images.map(src => ({
       originalSource: src,
@@ -19,11 +23,17 @@ export function toProductCreateInput(rec) {
 
 
 export function toProductUpdateInput(rec) {
-  return {
+  const input = {
     title: rec.title,
     status: rec.status.toUpperCase(),
     descriptionHtml: rec.descriptionHtml,
     vendor: rec.vendor,
     productType: rec.productType,
   };
+
+  if (rec.metafields && rec.metafields.length > 0) {
+    input.metafields = rec.metafields;
+  }
+
+  return input;
 }

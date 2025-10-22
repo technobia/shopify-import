@@ -7,59 +7,61 @@ import { toProductCreateInput, toProductUpdateInput } from '../lib/sync/transfor
 import { createProduct, updateProduct, updateVariant } from '../lib/api/products.js';
 
 async function main() {
-  console.log('🔄 Starting Product Sync...\n');
+  console.log('🔄 Product Sync\n');
 
   const input = await loadFeed();
-  console.log(`📦 Loaded ${input.length} products from feed\n`);
+  console.log(`Loaded ${input.length} products`);
 
   const skus = input.map((x) => x.sku).filter(Boolean);
   const discovered = await discoverBySkus(skus);
-  console.log(`🔍 Discovered ${discovered.size} existing products in Shopify\n`);
+  console.log(`Found ${discovered.size} existing products`);
 
   const { create, update } = diffRecords(input, discovered);
-  console.log(`📊 Analysis: create=${create.length} update=${update.length}\n`);
+  console.log(`Create: ${create.length} | Update: ${update.length}\n`);
 
-  console.log('=== Creating New Products ===');
-  for (let i = 0; i < create.length; i++) {
-    const { rec } = create[i];
-    try {
-      const { input, media } = toProductCreateInput(rec);
-      const result = await createProduct(input, media);
-      console.log(`✓ Created: ${rec.sku} - ${rec.title}`);
+  if (create.length > 0) {
+    console.log('Creating...');
+    for (let i = 0; i < create.length; i++) {
+      const { rec } = create[i];
+      try {
+        const { input, media } = toProductCreateInput(rec);
+        const result = await createProduct(input, media);
+        console.log(`✓ ${rec.sku} (${result.metafieldsCount} metafields)`);
 
-      if (result.variantId) {
-        const variantInput = {};
-        if (rec.sku) variantInput.sku = rec.sku;
-        if (rec.price != null) variantInput.price = rec.price.toString();
+        if (result.variantId) {
+          const variantInput = {};
+          if (rec.sku) variantInput.sku = rec.sku;
+          if (rec.price != null) variantInput.price = rec.price.toString();
 
-        if (Object.keys(variantInput).length > 0) {
-          await updateVariant(result.variantId, variantInput);
+          if (Object.keys(variantInput).length > 0) {
+            await updateVariant(result.variantId, variantInput);
+          }
         }
+      } catch (e) {
+        console.error(`✗ ${rec.sku}: ${e.message}`);
       }
-    } catch (e) {
-      console.error(`✗ Failed to create ${rec.sku}:`, e.message);
     }
   }
 
-  console.log('\n=== Updating Existing Products ===');
-  for (let i = 0; i < update.length; i++) {
-    const { rec, ids } = update[i];
-    try {
-      const input = toProductUpdateInput(rec);
-      await updateProduct(ids.productId, input);
-      console.log(`✓ Updated: ${rec.sku} - ${rec.title}`);
+  if (update.length > 0) {
+    console.log('\nUpdating...');
+    for (let i = 0; i < update.length; i++) {
+      const { rec, ids } = update[i];
+      try {
+        const input = toProductUpdateInput(rec);
+        await updateProduct(ids.productId, input);
+        console.log(`✓ ${rec.sku}`);
 
-      if (rec.price != null && ids.variantId) {
-        await updateVariant(ids.variantId, { price: rec.price.toString(), sku: rec.sku });
+        if (rec.price != null && ids.variantId) {
+          await updateVariant(ids.variantId, { price: rec.price.toString(), sku: rec.sku });
+        }
+      } catch (e) {
+        console.error(`✗ ${rec.sku}: ${e.message}`);
       }
-    } catch (e) {
-      console.error(`✗ Failed to update ${rec.sku}:`, e.message);
     }
   }
 
-  console.log('\n✅ Product sync complete!');
-  console.log(`   Created: ${create.length}`);
-  console.log(`   Updated: ${update.length}`);
+  console.log(`\n✅ Done (${create.length} created, ${update.length} updated)`);
 }
 
 async function loadFeed() {
@@ -68,6 +70,6 @@ async function loadFeed() {
 }
 
 main().catch((e) => {
-  console.error('❌ Product sync failed:', e);
+  console.error('❌ Sync failed:', e);
   process.exit(1);
 });

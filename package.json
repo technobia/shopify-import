@@ -4,6 +4,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "setup:metafields": "node src/commands/setup-metafields.js",
     "sync:products": "node src/commands/sync-products.js",
     "sync:price": "node src/commands/sync-price.js",
     "sync:stock": "node src/commands/sync-stock.js"

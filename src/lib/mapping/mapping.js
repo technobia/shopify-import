@@ -120,3 +120,161 @@ export const xmlMapping = {
   }
 };
 
+export const metafieldsMapping = {
+  manufacturer_number: {
+    path: 'HERSTNR',
+    type: 'single_line_text_field',
+    namespace: 'custom'
+  },
+
+  internal_article_number: {
+    path: 'INTARTNR',
+    type: 'single_line_text_field',
+    namespace: 'custom'
+  },
+
+  model_year: {
+    path: 'MODELLJAHR',
+    type: 'number_integer',
+    namespace: 'custom',
+    transform: (value) => {
+      if (!value || value === '0') return null;
+      return String(value);
+    }
+  },
+
+  product_group: {
+    path: 'WARENGRUPPE',
+    type: 'single_line_text_field',
+    namespace: 'custom'
+  },
+
+  variant_article_number: {
+    path: 'VARARTNR',
+    type: 'single_line_text_field',
+    namespace: 'custom'
+  },
+
+  reference_article_number: {
+    path: 'REFARTNR',
+    type: 'single_line_text_field',
+    namespace: 'custom'
+  },
+
+  reference_article_number_2: {
+    path: 'REFARTNR2',
+    type: 'single_line_text_field',
+    namespace: 'custom'
+  },
+
+  supplier_short_name: {
+    path: 'LFKURZBEZ',
+    type: 'single_line_text_field',
+    namespace: 'custom'
+  },
+
+  supplier_code: {
+    path: 'LFSN',
+    type: 'single_line_text_field',
+    namespace: 'custom'
+  },
+
+  model: {
+    path: 'MODELL',
+    type: 'single_line_text_field',
+    namespace: 'custom',
+    transform: (value) => {
+      if (!value || value === '0') return null;
+      return value;
+    }
+  },
+
+  color: {
+    path: 'FARBE',
+    type: 'single_line_text_field',
+    namespace: 'custom'
+  },
+
+  new_date: {
+    path: 'NEUDATUM',
+    type: 'date',
+    namespace: 'custom',
+    transform: (value) => {
+      if (!value) return null;
+      return value;
+    }
+  },
+
+  is_discontinued: {
+    path: 'AUSLAUF',
+    type: 'boolean',
+    namespace: 'custom',
+    transform: (value) => {
+      return value === '1' ? 'true' : 'false';
+    }
+  },
+
+  is_blocked: {
+    path: 'GESPERRT',
+    type: 'boolean',
+    namespace: 'custom',
+    transform: (value) => {
+      return value === 'J' ? 'true' : 'false';
+    }
+  },
+
+  package_shipping: {
+    path: 'PAKETVERSAND',
+    type: 'boolean',
+    namespace: 'custom',
+    transform: (value) => {
+      return value === '1' ? 'true' : 'false';
+    }
+  },
+
+  shipping_type: {
+    path: 'VERSANDART',
+    type: 'single_line_text_field',
+    namespace: 'custom'
+  },
+
+  net_price: {
+    path: 'VKNETTO',
+    type: 'number_decimal',
+    namespace: 'custom',
+    transform: (value) => {
+      if (!value) return null;
+      const normalized = String(value).replace(',', '.');
+      return normalized;
+    }
+  },
+
+  recommended_price: {
+    path: 'VKEMPF',
+    type: 'number_decimal',
+    namespace: 'custom',
+    transform: (value) => {
+      if (!value) return null;
+      const normalized = String(value).replace(',', '.');
+      return normalized;
+    }
+  },
+
+  original_price: {
+    path: 'VKORG',
+    type: 'number_decimal',
+    namespace: 'custom',
+    transform: (value) => {
+      if (!value) return null;
+      const normalized = String(value).replace(',', '.');
+      return normalized;
+    }
+  },
+
+  tax_indicator: {
+    path: 'MWSTKZ',
+    type: 'single_line_text_field',
+    namespace: 'custom'
+  }
+};
+

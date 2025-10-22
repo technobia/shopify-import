@@ -9,7 +9,17 @@ const CREATE_PRODUCT = `
                     edges { 
                         node { id sku } 
                     } 
-                } 
+                }
+                metafields(first: 50) {
+                    edges {
+                        node {
+                            id
+                            namespace
+                            key
+                            value
+                        }
+                    }
+                }
             } 
             userErrors { field message } 
         }
@@ -33,10 +43,12 @@ export async function createProduct(input, media) {
     if (errs?.length) throw new Error(JSON.stringify(errs));
     const product = d.productCreate.product;
     const variantId = product.variants.edges[0]?.node?.id;
+    const metafieldsCount = product.metafields?.edges?.length || 0;
 
     return {
         productId: product.id,
         variantId,
+        metafieldsCount,
         throttleStatus: response.extensions?.cost?.throttleStatus
     };
 }

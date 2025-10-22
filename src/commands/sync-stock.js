@@ -5,14 +5,14 @@ import { discoverBySkus } from '../lib/sync/discover.js';
 import { gql } from '../lib/api/client.js';
 
 async function main() {
-  console.log('📦 Starting Stock Sync...\n');
+  console.log('📦 Stock Sync\n');
 
   const input = await loadFeed();
-  console.log(`📦 Loaded ${input.length} products from feed\n`);
+  console.log(`Loaded ${input.length} products`);
 
   const skus = input.map((x) => x.sku).filter(Boolean);
   const discovered = await discoverBySkus(skus);
-  console.log(`🔍 Found ${discovered.size} existing products\n`);
+  console.log(`Found ${discovered.size} existing products`);
 
   const locations = await getInventoryLocations();
   if (locations.length === 0) {
@@ -20,13 +20,13 @@ async function main() {
   }
 
   const primaryLocation = locations[0];
-  console.log(`📍 Using location: ${primaryLocation.name} (${primaryLocation.id})\n`);
+  console.log(`Using location: ${primaryLocation.name}\n`);
 
   let updated = 0;
   let skipped = 0;
   let failed = 0;
 
-  console.log('=== Updating Inventory ===');
+  console.log('Updating...');
   for (let i = 0; i < input.length; i++) {
     const rec = input[i];
     if (!rec.sku) {
@@ -38,7 +38,7 @@ async function main() {
       const ids = discovered.get(rec.sku);
 
       if (!ids || !ids.variantId) {
-        console.log(`⊘ Skipped ${rec.sku}: Product not found in Shopify`);
+        console.log(`⊘ ${rec.sku}`);
         skipped++;
         continue;
       }
@@ -46,7 +46,7 @@ async function main() {
       const inventoryItemId = await getInventoryItemId(ids.variantId);
 
       if (!inventoryItemId) {
-        console.log(`⊘ Skipped ${rec.sku}: No inventory item found`);
+        console.log(`⊘ ${rec.sku}`);
         skipped++;
         continue;
       }
@@ -54,18 +54,15 @@ async function main() {
       const quantity = Number(rec.inventory ?? 0);
       await setInventoryQuantity(inventoryItemId, primaryLocation.id, quantity);
 
-      console.log(`✓ Updated stock: ${rec.sku} → ${quantity} units`);
+      console.log(`✓ ${rec.sku} → ${quantity}`);
       updated++;
     } catch (e) {
-      console.error(`✗ Failed to update ${rec.sku}:`, e.message);
+      console.error(`✗ ${rec.sku}: ${e.message}`);
       failed++;
     }
   }
 
-  console.log('\n✅ Stock sync complete!');
-  console.log(`   Updated: ${updated}`);
-  console.log(`   Skipped: ${skipped}`);
-  console.log(`   Failed: ${failed}`);
+  console.log(`\n✅ Done (${updated} updated, ${skipped} skipped, ${failed} failed)`);
 }
 
 async function getInventoryLocations() {
@@ -152,6 +149,6 @@ async function loadFeed() {
 }
 
 main().catch((e) => {
-  console.error('❌ Stock sync failed:', e);
+  console.error('❌ Sync failed:', e);
   process.exit(1);
 });

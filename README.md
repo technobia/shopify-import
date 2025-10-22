@@ -7,6 +7,7 @@ Node.js tool for syncing products, prices, and inventory from CSV/XML feeds to S
 - 🛍️ **Full Product Sync** - Create/update products with all details
 - 💰 **Price Sync** - Fast price-only updates
 - 📦 **Stock Sync** - Inventory quantity updates
+- 🏷️ **Metafields Support** - Store custom XML fields as metafields
 - 📄 **CSV & XML Support** - Flexible input formats
 - 🎯 **SKU-based Matching** - Automatic duplicate prevention
 
@@ -35,13 +36,16 @@ SOURCE_XML=./data/products.xml
 ### Get Shopify Token
 
 1. **Settings** > **Apps and sales channels** > **Develop apps**
-2. Create app with scopes: `read_products`, `write_products`, `read_inventory`, `write_inventory`
+2. Create app with scopes: `read_products`, `write_products`, `read_inventory`, `write_inventory`, `read_metaobjects`, `write_metaobjects`
 3. Copy **Admin API access token**
 
 ## Usage
 
 ```bash
-# Full product sync (titles, descriptions, images, prices)
+# Setup metafield definitions (run once)
+npm run setup:metafields
+
+# Full product sync (titles, descriptions, images, prices, metafields)
 npm run sync:products
 
 # Price-only updates (faster)
@@ -75,40 +79,4 @@ export const xmlMapping = {
 };
 ```
 
-**Mapping options:**
-- Simple: `{ path: 'FIELD_NAME' }`
-- Transform: `{ path: 'FIELD', transform: (value) => ... }`
-- Function: `(item) => { return ... }`
 
-## Project Structure
-
-```
-src/
-├── commands/          # CLI entry points
-│   ├── sync-products.js
-│   ├── sync-price.js
-│   └── sync-stock.js
-├── lib/
-│   ├── api/          # Shopify API
-│   ├── parsers/      # CSV/XML parsers
-│   ├── mapping/      # XML mapping (edit mapping.js)
-│   └── sync/         # Sync logic
-└── config.js
-```
-
-## Troubleshooting
-
-**Products not updating?**
-- Check SKU matches exactly (case-sensitive)
-- Verify product exists in Shopify
-
-**Rate limits?**
-- Use specific sync modes (`sync:price`, `sync:stock`)
-- Add delays between runs
-
-**XML fields missing?**
-- Edit `src/lib/mapping/mapping.js` for your XML structure
-
-## License
-
-ISC
