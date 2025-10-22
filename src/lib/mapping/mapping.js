@@ -120,22 +120,34 @@ export const xmlMapping = {
   }
 };
 
+const METAFIELD_TYPES = {
+  text: 'single_line_text_field',
+  textarea: 'multi_line_text_field',
+  number_integer: 'number_integer',
+  number_decimal: 'number_decimal',
+  boolean: 'boolean',
+  date: 'date'
+};
+
 export const metafieldsMapping = {
   manufacturer_number: {
+    name: 'Manufacturer Number',
     path: 'HERSTNR',
-    type: 'single_line_text_field',
+    type: METAFIELD_TYPES.text,
     namespace: 'custom'
   },
 
   internal_article_number: {
+    name: 'Internal Article Number',
     path: 'INTARTNR',
-    type: 'single_line_text_field',
+    type: METAFIELD_TYPES.text,
     namespace: 'custom'
   },
 
   model_year: {
+    name: 'Model Year',
     path: 'MODELLJAHR',
-    type: 'number_integer',
+    type: METAFIELD_TYPES.number_integer,
     namespace: 'custom',
     transform: (value) => {
       if (!value || value === '0') return null;
@@ -144,44 +156,51 @@ export const metafieldsMapping = {
   },
 
   product_group: {
+    name: 'Product Group',
     path: 'WARENGRUPPE',
-    type: 'single_line_text_field',
+    type: METAFIELD_TYPES.text,
     namespace: 'custom'
   },
 
   variant_article_number: {
+    name: 'Variant Article Number',
     path: 'VARARTNR',
-    type: 'single_line_text_field',
+    type: METAFIELD_TYPES.text,
     namespace: 'custom'
   },
 
   reference_article_number: {
+    name: 'Reference Article Number',
     path: 'REFARTNR',
-    type: 'single_line_text_field',
+    type: METAFIELD_TYPES.text,
     namespace: 'custom'
   },
 
   reference_article_number_2: {
+    name: 'Reference Article Number 2',
     path: 'REFARTNR2',
-    type: 'single_line_text_field',
+    type: METAFIELD_TYPES.text,
     namespace: 'custom'
   },
 
   supplier_short_name: {
+    name: 'Supplier Short Name',
     path: 'LFKURZBEZ',
-    type: 'single_line_text_field',
+    type: METAFIELD_TYPES.text,
     namespace: 'custom'
   },
 
   supplier_code: {
+    name: 'Supplier Code',
     path: 'LFSN',
-    type: 'single_line_text_field',
+    type: METAFIELD_TYPES.text,
     namespace: 'custom'
   },
 
   model: {
+    name: 'Model',
     path: 'MODELL',
-    type: 'single_line_text_field',
+    type: METAFIELD_TYPES.text,
     namespace: 'custom',
     transform: (value) => {
       if (!value || value === '0') return null;
@@ -190,14 +209,16 @@ export const metafieldsMapping = {
   },
 
   color: {
+    name: 'Color',
     path: 'FARBE',
-    type: 'single_line_text_field',
+    type: METAFIELD_TYPES.text,
     namespace: 'custom'
   },
 
   new_date: {
+    name: 'New Date',
     path: 'NEUDATUM',
-    type: 'date',
+    type: METAFIELD_TYPES.date,
     namespace: 'custom',
     transform: (value) => {
       if (!value) return null;
@@ -206,8 +227,9 @@ export const metafieldsMapping = {
   },
 
   is_discontinued: {
+    name: 'Is Discontinued',
     path: 'AUSLAUF',
-    type: 'boolean',
+    type: METAFIELD_TYPES.boolean,
     namespace: 'custom',
     transform: (value) => {
       return value === '1' ? 'true' : 'false';
@@ -215,8 +237,9 @@ export const metafieldsMapping = {
   },
 
   is_blocked: {
+    name: 'Is Blocked',
     path: 'GESPERRT',
-    type: 'boolean',
+    type: METAFIELD_TYPES.boolean,
     namespace: 'custom',
     transform: (value) => {
       return value === 'J' ? 'true' : 'false';
@@ -224,8 +247,9 @@ export const metafieldsMapping = {
   },
 
   package_shipping: {
+    name: 'Package Shipping',
     path: 'PAKETVERSAND',
-    type: 'boolean',
+    type: METAFIELD_TYPES.boolean,
     namespace: 'custom',
     transform: (value) => {
       return value === '1' ? 'true' : 'false';
@@ -233,14 +257,16 @@ export const metafieldsMapping = {
   },
 
   shipping_type: {
+    name: 'Shipping Type',
     path: 'VERSANDART',
-    type: 'single_line_text_field',
+    type: METAFIELD_TYPES.text,
     namespace: 'custom'
   },
 
   net_price: {
+    name: 'Net Price',
     path: 'VKNETTO',
-    type: 'number_decimal',
+    type: METAFIELD_TYPES.number_decimal,
     namespace: 'custom',
     transform: (value) => {
       if (!value) return null;
@@ -250,8 +276,9 @@ export const metafieldsMapping = {
   },
 
   recommended_price: {
+    name: 'Recommended Price',
     path: 'VKEMPF',
-    type: 'number_decimal',
+    type: METAFIELD_TYPES.number_decimal,
     namespace: 'custom',
     transform: (value) => {
       if (!value) return null;
@@ -261,8 +288,9 @@ export const metafieldsMapping = {
   },
 
   original_price: {
+    name: 'Original Price',
     path: 'VKORG',
-    type: 'number_decimal',
+    type: METAFIELD_TYPES.number_decimal,
     namespace: 'custom',
     transform: (value) => {
       if (!value) return null;
@@ -272,8 +300,9 @@ export const metafieldsMapping = {
   },
 
   tax_indicator: {
+    name: 'Tax Indicator',
     path: 'MWSTKZ',
-    type: 'single_line_text_field',
+    type: METAFIELD_TYPES.text,
     namespace: 'custom'
   }
 };

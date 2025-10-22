@@ -18,44 +18,12 @@ const CREATE_METAFIELD_DEFINITION = `
   }
 `;
 
-const SHOPIFY_TYPE_MAP = {
-  'single_line_text_field': 'single_line_text_field',
-  'multi_line_text_field': 'multi_line_text_field',
-  'number_integer': 'number_integer',
-  'number_decimal': 'number_decimal',
-  'boolean': 'boolean',
-  'date': 'date'
-};
-
-const FIELD_NAMES = {
-  manufacturer_number: 'Manufacturer Number',
-  internal_article_number: 'Internal Article Number',
-  model_year: 'Model Year',
-  product_group: 'Product Group',
-  variant_article_number: 'Variant Article Number',
-  reference_article_number: 'Reference Article Number',
-  reference_article_number_2: 'Reference Article Number 2',
-  supplier_short_name: 'Supplier Short Name',
-  supplier_code: 'Supplier Code',
-  model: 'Model',
-  color: 'Color',
-  new_date: 'New Date',
-  is_discontinued: 'Is Discontinued',
-  is_blocked: 'Is Blocked',
-  package_shipping: 'Package Shipping',
-  shipping_type: 'Shipping Type',
-  net_price: 'Net Price',
-  recommended_price: 'Recommended Price',
-  original_price: 'Original Price',
-  tax_indicator: 'Tax Indicator'
-};
-
 async function createMetafieldDefinition(key, config) {
   const definition = {
-    name: FIELD_NAMES[key] || key,
+    name: config.name || key,
     namespace: config.namespace || 'custom',
     key: key,
-    type: SHOPIFY_TYPE_MAP[config.type] || 'single_line_text_field',
+    type: config.type || 'single_line_text_field',
     ownerType: 'PRODUCT'
   };
 
