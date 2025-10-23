@@ -4,15 +4,19 @@ import { parseXml } from '../lib/parsers/xml.js';
 import { discoverBySkus } from '../lib/sync/discover.js';
 import { gql } from '../lib/api/client.js';
 
+function chunkArray(array, size) {
+  const chunks = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
+}
+
 async function main() {
   console.log('📦 Stock Sync\n');
 
   const input = await loadFeed();
   console.log(`Loaded ${input.length} products`);
-
-  const skus = input.map((x) => x.sku).filter(Boolean);
-  const discovered = await discoverBySkus(skus);
-  console.log(`Found ${discovered.size} existing products`);
 
   const locations = await getInventoryLocations();
   if (locations.length === 0) {
@@ -20,49 +24,64 @@ async function main() {
   }
 
   const primaryLocation = locations[0];
-  console.log(`Using location: ${primaryLocation.name}\n`);
+  console.log(`Using location: ${primaryLocation.name}`);
+  console.log(`Chunk size: ${cfg.chunkItems}\n`);
 
   let updated = 0;
   let skipped = 0;
   let failed = 0;
 
-  console.log('Updating...');
-  for (let i = 0; i < input.length; i++) {
-    const rec = input[i];
-    if (!rec.sku) {
-      skipped++;
-      continue;
-    }
+  const chunks = chunkArray(input, cfg.chunkItems);
+  console.log(`Processing in ${chunks.length} chunk(s)...\n`);
 
-    try {
-      const ids = discovered.get(rec.sku);
+  for (let chunkIdx = 0; chunkIdx < chunks.length; chunkIdx++) {
+    const chunk = chunks[chunkIdx];
+    console.log(`📦 Chunk ${chunkIdx + 1}/${chunks.length} (${chunk.length} products)`);
 
-      if (!ids || !ids.variantId) {
-        console.log(`⊘ ${rec.sku}`);
+    const skus = chunk.map((x) => x.sku).filter(Boolean);
+    const discovered = await discoverBySkus(skus);
+    console.log(`Found ${discovered.size} existing products in this chunk\n`);
+
+    console.log('Updating...');
+    for (let i = 0; i < chunk.length; i++) {
+      const rec = chunk[i];
+      if (!rec.sku) {
         skipped++;
         continue;
       }
 
-      const inventoryItemId = await getInventoryItemId(ids.variantId);
+      try {
+        const ids = discovered.get(rec.sku);
 
-      if (!inventoryItemId) {
-        console.log(`⊘ ${rec.sku}`);
-        skipped++;
-        continue;
+        if (!ids || !ids.variantId) {
+          console.log(`⊘ ${rec.sku}`);
+          skipped++;
+          continue;
+        }
+
+        const inventoryItemId = await getInventoryItemId(ids.variantId);
+
+        if (!inventoryItemId) {
+          console.log(`⊘ ${rec.sku}`);
+          skipped++;
+          continue;
+        }
+
+        const quantity = Number(rec.inventory ?? 0);
+        await setInventoryQuantity(inventoryItemId, primaryLocation.id, quantity);
+
+        console.log(`✓ ${rec.sku} → ${quantity}`);
+        updated++;
+      } catch (e) {
+        console.error(`✗ ${rec.sku}: ${e.message}`);
+        failed++;
       }
-
-      const quantity = Number(rec.inventory ?? 0);
-      await setInventoryQuantity(inventoryItemId, primaryLocation.id, quantity);
-
-      console.log(`✓ ${rec.sku} → ${quantity}`);
-      updated++;
-    } catch (e) {
-      console.error(`✗ ${rec.sku}: ${e.message}`);
-      failed++;
     }
+
+    console.log('');
   }
 
-  console.log(`\n✅ Done (${updated} updated, ${skipped} skipped, ${failed} failed)`);
+  console.log(`✅ Done (${updated} updated, ${skipped} skipped, ${failed} failed)`);
 }
 
 async function getInventoryLocations() {
