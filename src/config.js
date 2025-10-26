@@ -7,8 +7,6 @@ export const cfg = {
   primarySource: (process.env.PRIMARY_SOURCE || 'csv').toLowerCase(),
   csvSource: process.env.SOURCE_CSV || './data/products.csv',
   xmlSource: process.env.SOURCE_XML || './data/products.xml',
-  feedCsv: process.env.SOURCE_CSV || './data/products.csv',
-  feedXml: process.env.SOURCE_XML || './data/products.xml',
   chunkItems: parseInt(process.env.CHUNK_ITEMS, 10) || 100,
 };
 

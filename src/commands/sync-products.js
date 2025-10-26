@@ -89,8 +89,8 @@ async function main() {
 }
 
 async function loadFeed() {
-  if (cfg.primarySource === 'xml') return parseXml(cfg.feedXml);
-  return parseCsv(cfg.feedCsv);
+  if (cfg.primarySource === 'xml') return parseXml(cfg.xmlSource);
+  return parseCsv(cfg.csvSource);
 }
 
 main().catch((e) => {

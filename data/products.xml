@@ -19,8 +19,8 @@
                 <FARBE>gelb</FARBE>
                 <KURZTEXT></KURZTEXT>
                 <LANGTEXT></LANGTEXT>
-                <KURZBEZEICHNUNG>Lackstift gelb RAL 1018 12 ml</KURZBEZEICHNUNG>
-                <BEZEICHNUNG>Lackstift gelb RAL 1018 12 ml</BEZEICHNUNG>
+                <KURZBEZEICHNUNG>Test Product</KURZBEZEICHNUNG>
+                <BEZEICHNUNG>Test Product</BEZEICHNUNG>
                 <ARTSN>LACKSTIF</ARTSN>
                 <VK>9,99</VK>
                 <VKNETTO>8,4</VKNETTO>
@@ -30,13 +30,15 @@
                 <VKORG>9,99</VKORG>
                 <VKTIEF>0</VKTIEF>
                 <VKSTREICH>0,00</VKSTREICH>
+                <STOCK>10</STOCK>
                 <GRUNDPREIS>
                     <EINHEIT></EINHEIT>
                     <EINHEITBEZEICHNUNG></EINHEITBEZEICHNUNG>
                     <MENGE></MENGE>
                     <PREIS></PREIS>
                 </GRUNDPREIS>
-                <BILD>02200444.jpg;02200445.jpg;02200448.jpg;02200449.jpg;02200450.jpg;02200451.jpg;02200452.jpg;02200453.jpg;</BILD>
+                <BILD>
+                    02200444.jpg;02200445.jpg;02200448.jpg;02200449.jpg;02200450.jpg;02200451.jpg;02200452.jpg;02200453.jpg;</BILD>
                 <BILDER_URL>
                     <BILD_URL>https://prodimage.zeg.com/Bilder/1140x760/ZEG/022/022-00444.jpg?404=2</BILD_URL>
                 </BILDER_URL>

@@ -29,8 +29,11 @@ export const xmlMapping = {
   },
 
   inventory: {
-    path: null,
-    transform: () => 0
+    path: 'STOCK',
+    transform: (value) => {
+      const stock = Number(value);
+      return isNaN(stock) ? 0 : stock;
+    }
   },
 
   status: {
